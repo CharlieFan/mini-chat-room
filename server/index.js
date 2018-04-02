@@ -4,23 +4,25 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('mini-chat:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('mini-chat:server');
+const http = require('http');
 const socketIO = require('socket.io');
+const { generateMessage } = require('../utils/message');
+const msgEvents = require('../types/msgEvents');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 let io = socketIO(server);
 
 /**
@@ -40,25 +42,14 @@ server.on('listening', onListening);
 
 io.on('connection', (socket) => {
     console.log('new user');
-    socket.emit('newMsg', {
-        from: 'Admin',
-        text: 'Welcome to mini chat',
-        createAt: new Date().getTime()
-    });
+    socket.emit(msgEvents.newMsg, generateMessage('admin', 'Welcome to mini chat'));
 
-    socket.broadcast.emit('newMsg', {
-        from: 'user',
-        text: 'user joined channel',
-        createAt: new Date().getTime()
-    });
+    socket.broadcast.emit(msgEvents.newMsg, generateMessage('admin', 'new user just joined'));
 
-    socket.on('createMsg', function(msg) {
+    socket.on(msgEvents.createMsg, function(msg, cb) {
         console.log('new msg:', msg);
-        io.emit('newMsg', {
-            from: msg.from,
-            text: msg.text,
-            createAt: new Date().getTime()
-        });
+        io.emit('newMsg', generateMessage(msg.from, msg.text));
+        cb('This is from server');
     });
 
     socket.on('disconnect', function() {
