@@ -1,5 +1,5 @@
 const rules = {
-    required(value, name) {
+    required(value, name = 'This Field') {
         return new Promise((resolve, reject) => {
             let valueStr = value.toString();
             if (valueStr.length <= 0) {

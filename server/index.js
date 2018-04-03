@@ -42,18 +42,25 @@ server.on('listening', onListening);
 
 io.on('connection', (socket) => {
     console.log('new user:', socket.id);
-    socket.emit(msgEvents.newMsg, generateMessage('admin', 'Welcome to mini chat'));
-
-    socket.to().emit(msgEvents.newMsg, generateMessage('admin', 'haha'));
-
-    socket.broadcast.emit(msgEvents.newMsg, generateMessage('admin', 'new user just joined'));
-
+    
+    
     socket.on(msgEvents.createMsg, function(msg, cb) {
         console.log('new msg:', socket.id);
         io.emit('newMsg', generateMessage(msg.from, msg.text));
         if (cb) {
             cb('This is from server');
         }
+    });
+    
+    socket.on('join', (channel, cb) => {
+        if (!channel) {
+            cb('Room name is required!');
+        }
+        socket.join(channel);
+        
+        socket.emit(msgEvents.newMsg, generateMessage('Admin', `Welcome to ${channel}`));
+
+        socket.broadcast.to(channel).emit(msgEvents.newMsg, generateMessage('admin', 'new user just joined'));
     });
 
     socket.on('disconnect', function() {

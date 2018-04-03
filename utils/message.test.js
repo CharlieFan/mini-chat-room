@@ -1,6 +1,5 @@
 /* eslint-disable */
-const expect = require('chai').expect;
-const assert = require('chai').assert;
+const { expect } = require('../test');
 const message = require('./message')
 
 describe('Test Mesaage', () => {

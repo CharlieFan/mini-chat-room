@@ -4,13 +4,14 @@ const { expect, assert } = test;
 test.should();
 
 const { rules } = require('./validation');
-// beforeEach(() => {
-//     return rules.
-// });
 
-describe('Test validation rules', () => {
-    it('Required with valid value should pass', () => {
-        return rules.required('something', 'field name').should.eventually.equal(true);
+describe('Validation rules', () => {
+    describe('Test required', () => {
+        it('Required with valid value should pass', () => {
+            return rules.required('something', 'field name').should.eventually.equal(true);
+        });
+        it('Required with empty value should faild', () => {
+            return rules.required('', 'filed name').should.eventually.be.rejected;
+        });
     });
-    it('Required with empty value should faild', () => {});
 });
