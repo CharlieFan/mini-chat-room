@@ -1,17 +1,18 @@
-// addUser(id, name, room)
+// addUser(id, name, channel)
 // removeUser(id)
 // getUser(id)
-// getUserList(room)
+// getUserList(channel)
 
 class Users {
     constructor() {
         this.users = [];
     }
 
-    addUser(id, name) {
+    addUser(id, name, channel) {
         let user = {
             id,
-            name
+            name,
+            channel
         };
 
         this.users.push(user);
@@ -19,11 +20,13 @@ class Users {
     }
 
     remove(id) {
-        this.users = this.users.map((user) => {
-            if (user.id !== id) {
-                return user;
-            }
+        let removed = this.getUser(id);
+        this.users = this.users.filter((user) => {
+            return user.id !== id;
         });
+        
+
+        return removed;
     }
 
     getUser(id) {

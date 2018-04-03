@@ -5,9 +5,12 @@ var socket = io();
 socket.on('connect', function() {
     console.log('connected', socket.id);
 
-    socket.emit('join', 'general', function (err) {
-        if (err) throw err;
-    });
+    // socket.emit('join', {
+    //     name: 'aUser',
+    //     channel: 'general'
+    // }, function (err) {
+    //     if (err) throw err;
+    // });
 });
 
 socket.on("disconnect", function() {

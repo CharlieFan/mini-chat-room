@@ -10,6 +10,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const { generateMessage } = require('../utils/message');
 const msgEvents = require('../types/msgEvents');
+const { Users } = require('../model/users');
 
 /**
  * Get port from environment and store in Express.
@@ -40,31 +41,45 @@ server.on('listening', onListening);
  * Listen on websocket:
  */
 
+//  On server connected
+let currentUsers = new Users();
+
 io.on('connection', (socket) => {
-    console.log('new user:', socket.id);
+    console.log('current socket:', socket.id);
     
-    
+    // On Client create new Msg
     socket.on(msgEvents.createMsg, function(msg, cb) {
-        console.log('new msg:', socket.id);
-        io.emit('newMsg', generateMessage(msg.from, msg.text));
+        let user = currentUsers.getUser(socket.id);
+        if (user) {
+            io.to(user.channel).emit('newMsg', generateMessage(msg.from, msg.text));
+        }
         if (cb) {
             cb('This is from server');
         }
     });
     
-    socket.on('join', (channel, cb) => {
+    // On Join channel
+    socket.on('join', (params, cb) => {
+        let { name, channel} = params;
         if (!channel) {
-            cb('Room name is required!');
+            return cb('channel name is required!');
         }
+
         socket.join(channel);
-        
+        currentUsers.remove(socket.id);
+        currentUsers.addUser(socket.id, name, channel);
         socket.emit(msgEvents.newMsg, generateMessage('Admin', `Welcome to ${channel}`));
 
-        socket.broadcast.to(channel).emit(msgEvents.newMsg, generateMessage('admin', 'new user just joined'));
+        socket.broadcast.to(channel).emit(msgEvents.newMsg, generateMessage('admin', `${name} just joined`));
     });
 
+    // On disconnected
     socket.on('disconnect', function() {
-        console.log('client disconnected');
+        let disconnected = currentUsers.remove(socket.id);
+        if (disconnected) {
+            io.to(disconnected.channel).emit(msgEvents.newMsg, generateMessage('Admin', `${disconnected.name} has left`));
+            console.log(`${disconnected.name} ${socket.id} is Disconnected`);
+        }
     });
 });
 
