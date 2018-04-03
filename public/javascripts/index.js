@@ -1,11 +1,13 @@
 /* eslint-disable */
 
 var socket = io();
-console.log(socket)
 
+socket.on('connect', function() {
+    console.log('connected', socket.id);
 
-socket.on("connect", function() {
-    console.log("connected");
+    socket.emit('join', 'general', function (err) {
+        if (err) throw err;
+    });
 });
 
 socket.on("disconnect", function() {

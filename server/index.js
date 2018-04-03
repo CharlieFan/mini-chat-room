@@ -41,15 +41,19 @@ server.on('listening', onListening);
  */
 
 io.on('connection', (socket) => {
-    console.log('new user');
+    console.log('new user:', socket.id);
     socket.emit(msgEvents.newMsg, generateMessage('admin', 'Welcome to mini chat'));
+
+    socket.to().emit(msgEvents.newMsg, generateMessage('admin', 'haha'));
 
     socket.broadcast.emit(msgEvents.newMsg, generateMessage('admin', 'new user just joined'));
 
     socket.on(msgEvents.createMsg, function(msg, cb) {
-        console.log('new msg:', msg);
+        console.log('new msg:', socket.id);
         io.emit('newMsg', generateMessage(msg.from, msg.text));
-        cb('This is from server');
+        if (cb) {
+            cb('This is from server');
+        }
     });
 
     socket.on('disconnect', function() {
