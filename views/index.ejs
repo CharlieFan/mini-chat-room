@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
     <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body class="index-view">
+    <div class="content-wrapper">
+        <div>
+            <h1>
+                <%= heading %>
+            </h1>
+            <p class="index-view__description">
+                <%= description %>
+            </p>
+    
+            <form action="/app" class="index-view__form" id="entry-form">
+                <label>
+                    <span>Create a username</span>
+                    <input type="text"
+                        name="username"
+                        required
+                        class="input_general"
+                        placeholder="Create Your username">
+                </label>
+        
+                <label>
+                    <span>Join a channel</span>
+                    <input type="text"
+                        class="input_general"
+                        required
+                        name="channel"
+                        placeholder="input a Channel name (e.g general)">
+                </label>
+        
+                <button type="submit">Join</button>
+            </form>
+        </div>
+    </div>
+</body>
+
 </html>

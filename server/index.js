@@ -38,7 +38,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /**
- * Listen on websocket:
+ * Listen on Websocket:
  */
 
 //  On server connected
@@ -50,17 +50,21 @@ io.on('connection', (socket) => {
     // On Client create new Msg
     socket.on(msgEvents.createMsg, function(msg, cb) {
         let user = currentUsers.getUser(socket.id);
-        if (user) {
-            io.to(user.channel).emit('newMsg', generateMessage(msg.from, msg.text));
-        }
-        if (cb) {
-            cb('This is from server');
+        let msgText = msg.text.trim();
+        if (user && msgText.length > 0) {
+            io.to(user.channel).emit('newMsg', generateMessage(user.name, msgText));
+        } else if (msgText.length <=0 ){
+            cb('Cannot send empty message');
+        } else {
+            cb('Invalide user');
         }
     });
     
-    // On Join channel
+    // On Join Channel
     socket.on('join', (params, cb) => {
         let { name, channel} = params;
+        console.log('joined');
+
         if (!channel) {
             return cb('channel name is required!');
         }
@@ -68,16 +72,18 @@ io.on('connection', (socket) => {
         socket.join(channel);
         currentUsers.remove(socket.id);
         currentUsers.addUser(socket.id, name, channel);
-        socket.emit(msgEvents.newMsg, generateMessage('Admin', `Welcome to ${channel}`));
-
-        socket.broadcast.to(channel).emit(msgEvents.newMsg, generateMessage('admin', `${name} just joined`));
+        io.to(channel).emit(msgEvents.updateUsers, currentUsers.users);
+        
+        socket.emit(msgEvents.newMsg, generateMessage('Sys', `Welcome to #${channel}`));
+        socket.broadcast.to(channel).emit(msgEvents.newMsg, generateMessage('Sys', `${name} just joined`));
     });
 
     // On disconnected
     socket.on('disconnect', function() {
         let disconnected = currentUsers.remove(socket.id);
         if (disconnected) {
-            io.to(disconnected.channel).emit(msgEvents.newMsg, generateMessage('Admin', `${disconnected.name} has left`));
+            io.to(disconnected.channel).emit(msgEvents.newMsg, generateMessage('Sys', `${disconnected.name} has left`));
+            io.to(disconnected.channel).emit(msgEvents.updateUsers, currentUsers.users);
             console.log(`${disconnected.name} ${socket.id} is Disconnected`);
         }
     });

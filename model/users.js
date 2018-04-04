@@ -1,8 +1,3 @@
-// addUser(id, name, channel)
-// removeUser(id)
-// getUser(id)
-// getUserList(channel)
-
 class Users {
     constructor() {
         this.users = [];

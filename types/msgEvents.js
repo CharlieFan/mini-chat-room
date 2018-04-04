@@ -1,4 +1,5 @@
 module.exports = {
     newMsg: 'newMsg',
-    createMsg: 'createMsg'
+    createMsg: 'createMsg',
+    updateUsers: 'updateUsers'
 };

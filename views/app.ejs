@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body class="view-app">
+    <div class="view-app__content-wrapper">
+        <section class="view-app__sidebar">
+            <h2 id="channel-header"># General</h2>
+            <h3>Current Memebers</h3>
+            <ul id="member-list">
+            </ul>
+        </section>
+
+        <section class="view-app__content">
+            <ul id="message-list">
+                <!-- <li>
+                    <div>
+                        <strong>User1</strong>
+                        <p>8:30</p>
+                    </div>
+                    <span>
+                        jfkdsfsfssfdasfsadfsadfsadsfsdfdjklfds
+                    </span>
+                </li>
+                <li>
+                    <span>
+                        jfkdsfsfsdjklfds
+                    </span>
+                </li> -->
+            </ul>
+            
+            <form id="message-form" class="messagebox">
+                <input type="text" name="message" placeholder="Write a message...">
+                <button>Send</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/app.js"></script>
+</body>
+
+</html>
